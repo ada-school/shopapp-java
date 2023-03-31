@@ -3,10 +3,10 @@ package org.adaschool.model;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Shop implements ShopService {
-    private List<Product> products;
+public class ArrayListShopService implements ShopService {
+    private final List<Product> products;
 
-    public Shop() {
+    public ArrayListShopService() {
         products = new ArrayList<>();
     }
 

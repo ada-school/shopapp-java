@@ -1,5 +1,5 @@
+import org.adaschool.model.ArrayListShopService;
 import org.adaschool.model.Product;
-import org.adaschool.model.Shop;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -8,11 +8,11 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class ShopTest {
-    private Shop shop;
+    private ArrayListShopService shop;
 
     @BeforeEach
     void setUp() {
-        shop = new Shop();
+        shop = new ArrayListShopService();
     }
 
     @Test
@@ -29,7 +29,7 @@ public class ShopTest {
         Product product = new Product("TestProduct", 10.0, 5);
         shop.addProduct(product);
         boolean removed = shop.removeProduct("TestProduct");
-        assertEquals(true, removed);
+        assertTrue(removed);
         Product foundProduct = shop.findProduct("TestProduct");
         assertNull(foundProduct);
     }
@@ -37,7 +37,7 @@ public class ShopTest {
     @Test
     void testRemoveNonExistingProduct() {
         boolean removed = shop.removeProduct("NonExistingProduct");
-        assertEquals(false, removed);
+        assertFalse(removed);
     }
 
     @Test

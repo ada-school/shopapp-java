@@ -1,16 +1,17 @@
 package org.adaschool.presentation;// Menu.java
 
 import org.adaschool.model.Product;
-import org.adaschool.model.Shop;
+import org.adaschool.model.ShopService;
 
+import java.util.List;
 import java.util.Scanner;
 
 public class Menu {
-    private Shop shop;
-    private Scanner scanner;
+    private final ShopService shopService;
+    private final Scanner scanner;
 
-    public Menu(Shop shop) {
-        this.shop = shop;
+    public Menu(ShopService shopService) {
+        this.shopService = shopService;
         scanner = new Scanner(System.in);
     }
 
@@ -27,47 +28,82 @@ public class Menu {
     private void displayMenu() {
 
         System.out.println(
-                "|                          /////////////\\\\\\\n" +
-                        "|                        (((((((((((((   \\\\\\\n" +
-                        "|                        ))) ~~      ~~   (((\n" +
-                        "|                        ((( (*)     (*)  )))\n" +
-                        "|                        )))     <        ((( \n" +
-                        "|                        ((( '\\______/`   ))) \n" +
-                        "|                        )))\\___________/((( \n" +
-                        "|                               _) (_ \n" +
-                        "|                               /\\_/\\");
-        System.out.println("±------------------------------------±");
-        System.out.println("|  Administrador My Tienda de Barrio |");
-        System.out.println("±------------------------------------±");
-        System.out.println("1. Agregar producto                  |");
-        System.out.println("2. Eliminar producto                 |");
-        System.out.println("3. Actualizar producto               |");
-        System.out.println("4. Ver todos los productos           |");
-        System.out.println("5. Salir                             |");
-        System.out.println("0------------------------------------0");
-        System.out.print("   Ingresa tu opción:    (1, 2, 3, 4, 5)  ");
+                """
+                        |o|                         /////////////\\\\\\
+                        |o|                        (((((((((((((   \\\\\\
+                        |o|                        ))) ~~      ~~   (((
+                        |o|                        ((( (*)     (*)  )))
+                        |o|                        )))     <        (((\s
+                        |o|                        ((( '\\______/`   )))\s
+                        |o|                        )))\\___________/(((\s
+                        |o|                        (((   _)  (_    )))\s\s
+                        |o|                              /\\__/\\""");
+        System.out.println("±----------------------------------------±");
+        System.out.println("|   Administrador Mi Tienda de Barrio    |");
+        System.out.println("±----------------------------------------±");
+        System.out.println("1. Agregar producto                      |");
+        System.out.println("2. Eliminar producto                     |");
+        System.out.println("3. Actualizar producto                   |");
+        System.out.println("4. Ver todos los productos               |");
+        System.out.println("5. Mostrar productos agotados            |");
+        System.out.println("6. Mostrar productos con inventario bajo |");
+        System.out.println("7. Buscar producto por nombre            |");
+        System.out.println("8. Salir                                 |");
+        System.out.println("±----------------------------------------±");
+        System.out.print("   Ingresa tu opción:    (1 - 8)  ");
     }
 
     private void handleUserChoice(int choice) {
         switch (choice) {
-            case 1:
-                addProduct();
-                break;
-            case 2:
-                removeProduct();
-                break;
-            case 3:
-                updateProduct();
-                break;
-            case 4:
+            case 1 -> addProduct();
+            case 2 -> removeProduct();
+            case 3 -> updateProduct();
+            case 4 -> {
                 listProducts();
-                break;
-            case 5:
-                System.out.println("Saliendo...");
-                break;
-            default:
-                System.out.println("Opción invalida. Por favor intenta de nuevo.");
+                enterPause();
+            }
+            case 5 -> {
+                showEmptyStockProducts();
+                enterPause();
+            }
+            case 6 -> {
+                showLowInventoryProducts();
+                enterPause();
+            }
+            case 7 -> {
+                findProductByName();
+                enterPause();
+            }
+            case 8 -> System.out.println("Saliendo...");
+            default -> System.out.println("Opción invalida. Por favor intenta de nuevo.");
         }
+
+    }
+
+    private void findProductByName() {
+        System.out.print("Ingresa el nombre del producto: ");
+        String name = scanner.nextLine();
+        List<Product> productsByName = shopService.findProductsByName(name);
+        if (productsByName.isEmpty()) {
+            System.out.println("No se encontraron productos con el nombre " + name);
+        } else {
+            System.out.println(productsByName);
+        }
+    }
+
+    private void showLowInventoryProducts() {
+        System.out.print("Ingresa el umbral de inventario bajo: ");
+        int threshold = scanner.nextInt();
+        shopService.findLowInventoryProducts(threshold);
+    }
+
+    private void showEmptyStockProducts() {
+        shopService.listProductsEmptyStock();
+    }
+
+    private void enterPause() {
+        System.out.println("Presiona Enter para continuar");
+        scanner.nextLine();
     }
 
     private void addProduct() {
@@ -80,13 +116,13 @@ public class Menu {
         scanner.nextLine(); // Consume the newline character
 
         Product product = new Product(name, price, stock);
-        shop.addProduct(product);
+        shopService.addProduct(product);
     }
 
     private void removeProduct() {
         System.out.print("Escribe el nombre del producto: ");
         String name = scanner.nextLine();
-        if (shop.removeProduct(name)) {
+        if (shopService.removeProduct(name)) {
             System.out.println("Producto " + name + " fué eliminado");
         } else {
             System.out.println("No se econtró el producto con nombre " + name);
@@ -96,7 +132,7 @@ public class Menu {
     private void updateProduct() {
         System.out.print("Escribe el nombre del producto: ");
         String name = scanner.nextLine();
-        Product product = shop.findProduct(name);
+        Product product = shopService.findProduct(name);
 
         if (product != null) {
             System.out.print("Escribe el nuevo precio (actual: " + product.getPrice() + "): ");
@@ -113,8 +149,8 @@ public class Menu {
     }
 
     private void listProducts() {
-        if (shop.getProductCount() > 0) {
-            shop.listProducts();
+        if (shopService.getProductCount() > 0) {
+            shopService.listProducts();
         } else {
             System.out.println("No hay productos en la tienda.");
         }
