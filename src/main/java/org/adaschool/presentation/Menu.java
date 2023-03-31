@@ -22,7 +22,7 @@ public class Menu {
             choice = scanner.nextInt();
             scanner.nextLine(); // Consume the newline character
             handleUserChoice(choice);
-        } while (choice != 5);
+        } while (choice != 8);
     }
 
     private void displayMenu() {
