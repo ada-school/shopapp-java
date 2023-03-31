@@ -13,7 +13,7 @@ public interface ShopService {
 
     void listProductsEmptyStock();
 
-    void listProductsLowStock(int stockLevel);
+    List<Product> findLowInventoryProducts(int threshold);
 
     List<Product> findProductsByName(String name);
 

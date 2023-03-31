@@ -41,9 +41,10 @@ public class Shop implements ShopService {
     }
 
     @Override
-    public void listProductsLowStock(int stockLevel) {
+    public List<Product> findLowInventoryProducts(int threshold) {
         //TODO: Implement this method
         System.out.println("Implement this method");
+        return null;
     }
 
     @Override
