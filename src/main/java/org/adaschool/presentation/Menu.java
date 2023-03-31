@@ -22,7 +22,7 @@ public class Menu {
             choice = scanner.nextInt();
             scanner.nextLine(); // Consume the newline character
             handleUserChoice(choice);
-        } while (choice != 5);
+        } while (choice != 8);
     }
 
     private void displayMenu() {
@@ -58,22 +58,10 @@ public class Menu {
             case 1 -> addProduct();
             case 2 -> removeProduct();
             case 3 -> updateProduct();
-            case 4 -> {
-                listProducts();
-                enterPause();
-            }
-            case 5 -> {
-                showEmptyStockProducts();
-                enterPause();
-            }
-            case 6 -> {
-                showLowInventoryProducts();
-                enterPause();
-            }
-            case 7 -> {
-                findProductByName();
-                enterPause();
-            }
+            case 4 -> listProducts();
+            case 5 -> showEmptyStockProducts();
+            case 6 -> showLowInventoryProducts();
+            case 7 -> findProductByName();
             case 8 -> System.out.println("Saliendo...");
             default -> System.out.println("Opción invalida. Por favor intenta de nuevo.");
         }
@@ -89,19 +77,32 @@ public class Menu {
         } else {
             System.out.println(productsByName);
         }
+        enterPause();
     }
 
     private void showLowInventoryProducts() {
         System.out.print("Ingresa el umbral de inventario bajo: ");
         int threshold = scanner.nextInt();
-        shopService.findLowInventoryProducts(threshold);
+        List<Product> lowInventoryProducts = shopService.findLowInventoryProducts(threshold);
+        if (lowInventoryProducts.isEmpty()) {
+            System.out.println("No se encontraron productos con inventario menor a " + threshold + " unidades");
+        } else {
+            System.out.println(lowInventoryProducts);
+        }
+        enterPause();
     }
 
     private void showEmptyStockProducts() {
         shopService.listProductsEmptyStock();
+        enterPause();
     }
 
     private void enterPause() {
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
         System.out.println("Presiona Enter para continuar");
         scanner.nextLine();
     }
@@ -117,6 +118,8 @@ public class Menu {
 
         Product product = new Product(name, price, stock);
         shopService.addProduct(product);
+        System.out.println("Producto " + name + " agregado");
+        enterPause();
     }
 
     private void removeProduct() {
@@ -127,6 +130,7 @@ public class Menu {
         } else {
             System.out.println("No se econtró el producto con nombre " + name);
         }
+        enterPause();
     }
 
     private void updateProduct() {
@@ -143,9 +147,11 @@ public class Menu {
 
             product.setPrice(price);
             product.setStock(stock);
+            System.out.println("Producto " + name + " actualizado");
         } else {
             System.out.println("Producto con nombre " + name + " no encontrado.");
         }
+        enterPause();
     }
 
     private void listProducts() {
@@ -154,6 +160,6 @@ public class Menu {
         } else {
             System.out.println("No hay productos en la tienda.");
         }
-
+        enterPause();
     }
 }

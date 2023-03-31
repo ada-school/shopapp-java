@@ -2,6 +2,7 @@ package org.adaschool.model;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class ArrayListShopService implements ShopService {
     private final List<Product> products;
@@ -36,23 +37,24 @@ public class ArrayListShopService implements ShopService {
 
     @Override
     public void listProductsEmptyStock() {
-        //TODO: Implement this method
-        System.out.println("Implement this method");
+        List<Product> emptyStockProducts = products.stream()
+                .filter(product -> product.getStock() == 0)
+                .toList();
+        emptyStockProducts.forEach(System.out::println);
     }
 
     @Override
     public List<Product> findLowInventoryProducts(int threshold) {
-        //TODO: Implement this method
-        System.out.println("Implement this method");
-        return null;
+        return products.stream()
+                .filter(product -> product.getStock() <= threshold)
+                .collect(Collectors.toList());
     }
 
     @Override
     public List<Product> findProductsByName(String name) {
-        //TODO: Implement this method
-        System.out.println("Implement this method");
-
-        return null;
+        return products.stream()
+                .filter(product -> product.getName().toLowerCase().contains(name.toLowerCase()))
+                .collect(Collectors.toList());
     }
 
     @Override
